@@ -46,6 +46,9 @@ public class Task implements Serializable {
     }
 
     public TaskStatus getStatus() {
+        if (status == null) {
+            return TaskStatus.valueofStatus(1);
+        }
         return TaskStatus.valueofStatus(status);
     }
 
