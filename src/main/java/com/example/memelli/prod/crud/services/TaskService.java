@@ -1,6 +1,8 @@
 package com.example.memelli.prod.crud.services;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memelli.prod.crud.dto.TaskDTO;
+import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.repositories.TaskRepository;
 import com.example.memelli.prod.crud.resources.exceptions.DataBaseException;
@@ -29,6 +32,14 @@ public class TaskService {
         Page<Task> list = taskRepository.findAll(pageable);
         return list.map(x -> new TaskDTO(x));
     }
+
+    @Transactional(readOnly = true)
+    public List<TaskDTO> findbyProjectId(Project project) {
+        List<Task> list = taskRepository.findByProjectId(project);
+        List<TaskDTO> listDTO = list.stream().map(x -> new TaskDTO(x)).collect(Collectors.toList());
+        return listDTO;
+    }
+
 
     @Transactional(readOnly = true)
     public TaskDTO findById(Long id) {

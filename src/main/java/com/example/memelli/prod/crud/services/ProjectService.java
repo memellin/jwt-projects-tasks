@@ -1,6 +1,7 @@
 package com.example.memelli.prod.crud.services;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memelli.prod.crud.dto.ProjectDTO;
+import com.example.memelli.prod.crud.dto.TaskDTO;
 import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.repositories.ProjectRepository;
 import com.example.memelli.prod.crud.resources.exceptions.DataBaseException;
@@ -25,6 +27,10 @@ public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    private TaskService taskService;
+
+   
     @Transactional(readOnly = true)
     public Page<ProjectDTO> findAllPaged(PageRequest pageable) {
         Page<Project> list = projectRepository.findAll(pageable);
@@ -35,7 +41,8 @@ public class ProjectService {
     public ProjectDTO findById(Long id) {
         Optional<Project> obj = projectRepository.findById(id);
         Project entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-        return new ProjectDTO(entity);
+        List<TaskDTO> tasks = taskService.findbyProjectId(entity);
+        return new ProjectDTO(entity, tasks);
     }
 
     @Transactional

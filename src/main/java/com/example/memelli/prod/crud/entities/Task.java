@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.memelli.prod.crud.entities.enums.TaskStatus;
@@ -20,13 +22,18 @@ public class Task implements Serializable {
     private String description;
     private Integer status;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
     public Task() {
     }
 
-    public Task(Long id, String description, TaskStatus status) {
+    public Task(Long id, String description, TaskStatus status, Project project) {
         this.id = id;
         this.description = description;
         setStatus(status);
+        this.project = project;
     }
 
     public Long getId() {
@@ -54,6 +61,15 @@ public class Task implements Serializable {
 
     public void setStatus(TaskStatus status) {
         this.status = status.getCode();
+    }
+    
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     @Override
