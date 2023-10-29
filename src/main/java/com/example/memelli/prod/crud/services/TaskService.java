@@ -57,31 +57,33 @@ public class TaskService {
         return new TaskDTO(entity);
     }
 
-        @Transactional
-        public TaskDTO insert(@RequestBody TaskDTO dto) {
-        // pega o id do projeto que vem no DTO
-        Long projectId = dto.getProjectId();
+    
+    @Transactional
+    public TaskDTO insert(@RequestBody TaskDTO dto) {
+    // pega o id do projeto que vem no DTO
+    Long projectId = dto.getProjectId();
 
-        // Valida o id do projeto
-        if (projectId == null) {
-            throw new ResourceNotFoundException("Project ID is required");
-        }
+    // Valida o id do projeto
+    if (projectId == null) {
+        throw new ResourceNotFoundException("Project ID is required");
+    }
 
-        // Cria nova entitidade task
-        Task entity = new Task();
-        entity.setDescription(dto.getDescription());
-        entity.setStatus(dto.getStatus());
+    // Cria nova entitidade task
+    Task entity = new Task();
+    entity.setDescription(dto.getDescription());
+    entity.setStatus(dto.getStatus());
 
-        // pega o projeto project id do taskdto e valida no projectrepository
-        Project project = projectRepository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+    // pega o projeto project id do taskdto e valida no projectrepository
+    Project project = projectRepository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        // Atribui o projeto a task
-        entity.setProject(project);
+    // Atribui o projeto a task
+    entity.setProject(project);
 
-        // salva a entidade task
-        entity = taskRepository.save(entity);
+    // salva a entidade task
+    entity = taskRepository.save(entity);
 
-        return new TaskDTO(entity);
+    return new TaskDTO(entity);
+
     }
 
    
