@@ -20,7 +20,7 @@ import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.repositories.ProjectRepository;
 import com.example.memelli.prod.crud.repositories.TaskRepository;
-import com.example.memelli.prod.crud.resources.exceptions.DataBaseException;
+import com.example.memelli.prod.crud.services.exceptions.DataBaseException;
 import com.example.memelli.prod.crud.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -90,7 +90,7 @@ public class TaskService {
     @Transactional
     public TaskDTO update(Long id, TaskDTO dto) {
         try{
-        Task entity = taskRepository.getReferenceById(id);
+        Task entity = taskRepository.getById(id);
         entity.setDescription(dto.getDescription());
         entity.setStatus(dto.getStatus());
         entity = taskRepository.save(entity);

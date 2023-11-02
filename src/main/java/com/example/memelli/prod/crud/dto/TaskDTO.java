@@ -2,6 +2,8 @@ package com.example.memelli.prod.crud.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.entities.enums.TaskStatus;
 
@@ -9,6 +11,7 @@ public class TaskDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    @NotBlank(message = "Campo obrigatório")
     private String description;
     private Integer status;
 

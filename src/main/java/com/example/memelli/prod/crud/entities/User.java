@@ -1,8 +1,9 @@
 package com.example.memelli.prod.crud.entities;
 
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +16,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,8 +32,10 @@ public class User implements Serializable {
 
     private String name;
     private String surname;
+    
     @Column(unique = true)
     private String email;
+
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -41,6 +48,7 @@ public class User implements Serializable {
     }   
 
     public User(Long id, String name, String surname, String email, String password) {
+        super();
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -116,6 +124,42 @@ public class User implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(x -> new SimpleGrantedAuthority(x.getAuthority())).collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+
+    return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled()  {
+
+        return true;
+    }
+
+    public UserDetails orElseThrow() {
+        return null;
     }
 
     

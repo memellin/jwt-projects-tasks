@@ -1,8 +1,11 @@
 package com.example.memelli.prod.crud.dto;
 
+import com.example.memelli.prod.crud.services.validation.UserInsertValid;
+
+@UserInsertValid
 public class UserInsertDTO extends UserDTO {
     private static final long serialVersionUID = 1L;
-
+    
     private String password;
 
     public UserInsertDTO() {

@@ -18,7 +18,7 @@ import com.example.memelli.prod.crud.dto.ProjectDTO;
 import com.example.memelli.prod.crud.dto.TaskDTO;
 import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.repositories.ProjectRepository;
-import com.example.memelli.prod.crud.resources.exceptions.DataBaseException;
+import com.example.memelli.prod.crud.services.exceptions.DataBaseException;
 import com.example.memelli.prod.crud.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -60,7 +60,7 @@ public class ProjectService {
      @Transactional
     public ProjectDTO update(Long id, ProjectDTO dto) {
         try{
-        Project entity = projectRepository.getReferenceById(id);
+        Project entity = projectRepository.getById(id);
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setStartDate(dto.getStartDate());

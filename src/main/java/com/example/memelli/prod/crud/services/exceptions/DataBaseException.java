@@ -1,4 +1,4 @@
-package com.example.memelli.prod.crud.resources.exceptions;
+package com.example.memelli.prod.crud.services.exceptions;
 
 public class DataBaseException extends RuntimeException{
     private static final long serialVersionUID = 1L;

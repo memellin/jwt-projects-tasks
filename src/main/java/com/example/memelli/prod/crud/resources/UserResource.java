@@ -2,6 +2,8 @@ package com.example.memelli.prod.crud.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.memelli.prod.crud.dto.UserDTO;
 import com.example.memelli.prod.crud.dto.UserInsertDTO;
+import com.example.memelli.prod.crud.dto.UserUpdateDTO;
 import com.example.memelli.prod.crud.services.UserService;
 
 @RestController
@@ -40,16 +43,17 @@ public class UserResource {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto) {
+    public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto) {
         UserDTO newdto = userService.insert(dto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newdto.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                        .buildAndExpand(newdto.getId()).toUri();
         return ResponseEntity.created(uri).body(newdto);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable long id, @RequestBody UserDTO dto) {
-        dto = userService.update(id, dto);
-        return ResponseEntity.ok().body(dto);
+    public ResponseEntity<UserDTO> update(@PathVariable Long id,@Valid @RequestBody UserUpdateDTO dto) {
+        UserDTO newDto = userService.update(id, dto);
+		return ResponseEntity.ok().body(newDto);
     }
 
     @DeleteMapping(value = "/{id}")

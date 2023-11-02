@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Size;
+
 import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.entities.enums.ProjectStatus;
@@ -14,9 +18,14 @@ public class ProjectDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    @Size(min = 5, max = 60, message="O nome deve ter entre 5 e 60 caracteres")
+    @NotBlank(message = "Campo obrigatório")
     private String name;
     private String description;
-    private LocalDateTime startDate;
+    @NotBlank(message = "Campo obrigatório")
+    private LocalDateTime startDate; //o projeto pode se iniciar a qualquer momento
+    @PastOrPresent(message="A data não pode ser futura")
+    @NotBlank(message = "Campo obrigatório")
     private LocalDateTime endDate;
     private Integer status;
 
@@ -45,12 +54,12 @@ public class ProjectDTO implements Serializable {
         setStatus(entity.getStatus());
     }
 
-    public ProjectDTO(Project entity, Set<Task> tasks) {
+    public ProjectDTO(Project entity, Set<Task> tasks) { //salvo as tasks em um task por segurança
         this(entity);
-        tasks.forEach(t -> this.tasks.add(new TaskDTO(t)));
+        tasks.forEach(t -> this.tasks.add(new TaskDTO(t))); 
     }
 
-    public ProjectDTO(Project entity, List<TaskDTO> tasks){
+    public ProjectDTO(Project entity, List<TaskDTO> tasks){ //listo os tasks em um taskDTO
         this(entity);
         tasks.forEach(t -> this.tasks.add((t)));
     }
