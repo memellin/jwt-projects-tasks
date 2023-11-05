@@ -1,15 +1,18 @@
 package com.example.memelli.prod.crud.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.entities.User;
 
-public class UserDTO implements Serializable{ // TRANSITAR NO JSON OS DADOS DO USUARIO E SUAS PERMISSOES
+public class UserDTO implements Serializable{ // CLASSE PARA TRANSITAR NO JSON OS DADOS DO USUARIO E SUAS PERMISSOES
 
     private static final long serialVersionUID = 1L;
 
@@ -22,16 +25,23 @@ public class UserDTO implements Serializable{ // TRANSITAR NO JSON OS DADOS DO U
     @Email(message= "Email deve ser um valor válido")
     private String email;
 
-    Set<RoleDTO> roles = new HashSet<>();
+    private Set<RoleDTO> roles = new HashSet<>();
+
+    private List<TaskDTO> tasks = new ArrayList<>();
+
+    private Long projectId;
+
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String name, String surname, String email) {
+    public UserDTO(Long id, String name, String surname, String email, Long projectId) {
+        super();
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.projectId = projectId;
     }
 
     public UserDTO(User entity) {
@@ -40,6 +50,17 @@ public class UserDTO implements Serializable{ // TRANSITAR NO JSON OS DADOS DO U
         surname = entity.getSurname();
         email = entity.getEmail();
         entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
+        projectId = entity.getProject().getId();
+    }
+
+    public UserDTO(User entity, Set<Task> tasks) { //salvo as tasks em um task por segurança
+        this(entity);
+        tasks.forEach(t -> this.tasks.add(new TaskDTO(t))); 
+    }
+
+    public UserDTO(User entity, List<TaskDTO> tasks) { //salvo as tasks em um task por segurança
+        this(entity);
+        tasks.forEach(t -> this.tasks.add(t)); 
     }
 
     public Long getId() {
@@ -76,6 +97,18 @@ public class UserDTO implements Serializable{ // TRANSITAR NO JSON OS DADOS DO U
 
     public Set<RoleDTO> getRoles() {
         return roles;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public List<TaskDTO> getTasks() {
+        return tasks;
     }
 
     

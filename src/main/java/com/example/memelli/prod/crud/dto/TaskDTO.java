@@ -16,15 +16,18 @@ public class TaskDTO implements Serializable {
     private Integer status;
 
     private Long projectId;
+    private Long userId;
 
     public TaskDTO() {
     }
 
-    public TaskDTO(Long id, String description, TaskStatus status, Long projectId) {
+    public TaskDTO(Long id, String description, TaskStatus status, Long projectId, Long userId) {
+        super();
         this.id = id;
         this.description = description;
         setStatus(status);
         this.projectId = projectId;
+        this.userId = userId;
     }
 
     public TaskDTO(Task entity) {
@@ -32,6 +35,7 @@ public class TaskDTO implements Serializable {
         this.description = entity.getDescription();
         setStatus(entity.getStatus());
         projectId = entity.getProject().getId();
+        userId = entity.getUser().getId();
     }
 
     public Long getId() {
@@ -50,8 +54,6 @@ public class TaskDTO implements Serializable {
         this.description = description;
     }
 
-
-
     public TaskStatus getStatus() {
         if (status == null) {
             return TaskStatus.valueofStatus(1);
@@ -69,6 +71,14 @@ public class TaskDTO implements Serializable {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
    

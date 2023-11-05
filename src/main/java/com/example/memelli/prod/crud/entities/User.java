@@ -1,7 +1,9 @@
 package com.example.memelli.prod.crud.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -44,16 +48,26 @@ public class User implements UserDetails {
     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany
+    private List<Task> tasks = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+
     public User() {
     }   
 
-    public User(Long id, String name, String surname, String email, String password) {
+    public User(Long id, String name, String surname, String email, String password, Project project, List<Task> tasks) {
         super();
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
+        this.project = project;
+        this.tasks = tasks;
     }
 
     public Long getId() {
@@ -99,6 +113,18 @@ public class User implements UserDetails {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public List<Task> getTask() {
+        return tasks;
     }
 
     @Override

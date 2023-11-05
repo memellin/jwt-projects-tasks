@@ -1,5 +1,6 @@
 package com.example.memelli.prod.crud.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memelli.prod.crud.dto.RoleDTO;
+import com.example.memelli.prod.crud.dto.TaskDTO;
 import com.example.memelli.prod.crud.dto.UserDTO;
 import com.example.memelli.prod.crud.dto.UserInsertDTO;
 import com.example.memelli.prod.crud.dto.UserUpdateDTO;
@@ -42,6 +44,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private TaskService taskService;
 
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -68,13 +73,12 @@ public class UserService implements UserDetailsService {
     public UserDTO findById(Long id) {
         Optional<User> obj = UserRepository.findById(id);
         User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-        return new UserDTO(entity);
+        List<TaskDTO> tasks = taskService.findbyUserId(entity);
+        return new UserDTO(entity, tasks);
     }
-
     @Transactional
     public UserDTO insert(UserInsertDTO dto) {
         User entity = new User();
-
         copyDtoToEntity(dto, entity);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         entity = UserRepository.save(entity);

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.memelli.prod.crud.dto.TaskDTO;
 import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.entities.Task;
+import com.example.memelli.prod.crud.entities.User;
 import com.example.memelli.prod.crud.repositories.ProjectRepository;
 import com.example.memelli.prod.crud.repositories.TaskRepository;
 import com.example.memelli.prod.crud.services.exceptions.DataBaseException;
@@ -43,6 +44,13 @@ public class TaskService {
     @Transactional(readOnly = true)
     public List<TaskDTO> findbyProjectId(Project project) {
         List<Task> list = taskRepository.findByProjectId(project);
+        List<TaskDTO> listDTO = list.stream().map(x -> new TaskDTO(x)).collect(Collectors.toList());
+        return listDTO;
+    }
+
+    @Transactional
+    public List<TaskDTO> findbyUserId(User user){
+        List<Task> list = taskRepository.findByUserId(user);
         List<TaskDTO> listDTO = list.stream().map(x -> new TaskDTO(x)).collect(Collectors.toList());
         return listDTO;
     }
