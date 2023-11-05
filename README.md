@@ -1,6 +1,6 @@
 # jwt-projects-tasks
 Diagrama do projeto:
-![image](https://github.com/memellin/jwt-projects-tasks/assets/60275233/0e1eda38-77bd-4ed3-ace4-0d3b81ce1044)
+![image](https://github.com/memellin/jwt-projects-tasks/assets/60275233/c65cee58-10fe-4497-a637-0209cbfd5acd)
 
 # Tecnologias utilizadas
 
