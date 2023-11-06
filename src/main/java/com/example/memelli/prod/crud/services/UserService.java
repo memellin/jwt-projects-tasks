@@ -25,8 +25,10 @@ import com.example.memelli.prod.crud.dto.UserDTO;
 import com.example.memelli.prod.crud.dto.UserInsertDTO;
 import com.example.memelli.prod.crud.dto.UserUpdateDTO;
 import com.example.memelli.prod.crud.entities.Role;
+import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.entities.User;
 import com.example.memelli.prod.crud.repositories.RoleRepository;
+import com.example.memelli.prod.crud.repositories.TaskRepository;
 import com.example.memelli.prod.crud.repositories.UserRepository;
 import com.example.memelli.prod.crud.services.exceptions.DataBaseException;
 import com.example.memelli.prod.crud.services.exceptions.ResourceNotFoundException;
@@ -47,6 +49,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskRepository taskRespository;
 
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -76,6 +81,7 @@ public class UserService implements UserDetailsService {
         List<TaskDTO> tasks = taskService.findbyUserId(entity);
         return new UserDTO(entity, tasks);
     }
+
     @Transactional
     public UserDTO insert(UserInsertDTO dto) {
         User entity = new User();
@@ -116,6 +122,13 @@ public class UserService implements UserDetailsService {
             Role role = roleRepository.getById(roleDTO.getId());
             entity.getRoles().add(role);
         }
+        entity.getTask();
+        for (TaskDTO taskDTO : dto.getTasks()){
+            Task task = taskRespository.getById(taskDTO.getId());
+            entity.getTask().add(task);
+        }
+        
+
     }
 
     @Override

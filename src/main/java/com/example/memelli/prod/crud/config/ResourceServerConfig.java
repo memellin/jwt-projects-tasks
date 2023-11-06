@@ -33,9 +33,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{ //con
     public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
             .antMatchers(PUBLIC).permitAll()
-            .antMatchers(HttpMethod.GET).permitAll()  //  , OPERATOR_OR_ADMIN, PUBLIC
-            .antMatchers(OPERATOR_OR_ADMIN).permitAll() // hasAnyRole("OPERATOR", "ADMIN")
-            .antMatchers(ADMIN).permitAll()//
+            .antMatchers(HttpMethod.GET, OPERATOR_OR_ADMIN).permitAll() //  , OPERATOR_OR_ADMIN, PUBLIC
+            .antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR", "ADMIN")
+            .antMatchers(ADMIN).hasRole("ADMIN")
             .anyRequest().authenticated();
     }    
 }
