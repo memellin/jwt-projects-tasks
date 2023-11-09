@@ -12,24 +12,27 @@ import javax.validation.constraints.Size;
 
 import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.entities.Task;
+import com.example.memelli.prod.crud.entities.User;
 import com.example.memelli.prod.crud.entities.enums.ProjectStatus;
 
 public class ProjectDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    @Size(min = 5, max = 60, message="O nome deve ter entre 5 e 60 caracteres")
+    @Size(min = 5, max = 60, message = "O nome deve ter entre 5 e 60 caracteres")
     @NotBlank(message = "Campo obrigatório")
     private String name;
     private String description;
     @NotBlank(message = "Campo obrigatório")
-    private LocalDateTime startDate; //o projeto pode se iniciar a qualquer momento
-    @PastOrPresent(message="A data não pode ser futura")
+    private LocalDateTime startDate; // o projeto pode se iniciar a qualquer momento
+    @PastOrPresent(message = "A data não pode ser futura")
     @NotBlank(message = "Campo obrigatório")
     private LocalDateTime endDate;
     private Integer status;
 
     private List<TaskDTO> tasks = new ArrayList<>();
+
+    private List<UserDTO> users = new ArrayList<>();
 
     public ProjectDTO() {
     }
@@ -54,14 +57,17 @@ public class ProjectDTO implements Serializable {
         setStatus(entity.getStatus());
     }
 
-    public ProjectDTO(Project entity, Set<Task> tasks) { //salvo as tasks em um task por segurança
+    public ProjectDTO(Project entity, Set<User> users, Set<Task> tasks) { // salvo as tasks em um task por segurança
         this(entity);
-        tasks.forEach(t -> this.tasks.add(new TaskDTO(t))); 
+        users.forEach(u -> this.users.add(new UserDTO(u)));
+        tasks.forEach(t -> this.tasks.add(new TaskDTO(t)));
     }
 
-    public ProjectDTO(Project entity, List<TaskDTO> tasks){ //listo os tasks em um taskDTO
+    public ProjectDTO(Project entity, List<UserDTO> users, List<TaskDTO> tasks) { // listo os tasks em um taskDTO
         this(entity);
+        users.forEach(u -> this.users.add((u)));
         tasks.forEach(t -> this.tasks.add((t)));
+
     }
 
     public Long getId() {
@@ -106,6 +112,10 @@ public class ProjectDTO implements Serializable {
 
     public List<TaskDTO> getTasks() {
         return tasks;
+    }
+
+    public List<UserDTO> getUsers() {
+        return users;
     }
 
     public ProjectStatus getStatus() {

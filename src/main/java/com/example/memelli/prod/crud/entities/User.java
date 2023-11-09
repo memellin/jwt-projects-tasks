@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +24,8 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "tb_user")
@@ -48,7 +51,7 @@ public class User implements UserDetails {
     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "user", fetch = FetchType.LAZY )
     private List<Task> tasks = new ArrayList<>();
 
     @ManyToOne
@@ -123,7 +126,8 @@ public class User implements UserDetails {
         this.project = project;
     }
 
-    public List<Task> getTask() {
+    @JsonManagedReference
+    public List<Task> getTasks() {
         return tasks;
     }
 

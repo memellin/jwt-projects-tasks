@@ -31,12 +31,15 @@ public class Project implements Serializable {
 
     @OneToMany(mappedBy = "project")
     private List<Task> tasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project")
+    private List<User> users = new ArrayList<>();
     
     public Project() {
     }
 
     public Project(Long id, String name, String description, LocalDateTime startDate, LocalDateTime endDate,
-            ProjectStatus status, List<Task> tasks) {
+            ProjectStatus status, List<Task> tasks, List<User> users) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -44,6 +47,7 @@ public class Project implements Serializable {
         this.endDate = endDate;
         setStatus(status);
         this.tasks = tasks;
+        this.users = users;
     }
 
     public Long getId() {
@@ -99,6 +103,10 @@ public class Project implements Serializable {
 
     public List<Task> getTasks() {
         return tasks;
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 
     @Override

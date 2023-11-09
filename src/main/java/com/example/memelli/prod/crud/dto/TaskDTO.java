@@ -16,6 +16,7 @@ public class TaskDTO implements Serializable {
     private Integer status;
 
     private Long projectId;
+
     private Long userId;
 
     public TaskDTO() {
@@ -31,11 +32,12 @@ public class TaskDTO implements Serializable {
     }
 
     public TaskDTO(Task entity) {
+        super();
         this.id = entity.getId();
         this.description = entity.getDescription();
         setStatus(entity.getStatus());
-        projectId = entity.getProject().getId();
-        userId = entity.getUser().getId();
+        this.projectId = entity.getProject().getId();
+        this.userId = entity.getUser().getId();
     }
 
     public Long getId() {
@@ -74,7 +76,10 @@ public class TaskDTO implements Serializable {
     }
 
     public Long getUserId() {
-        return userId;
+        if(userId != null) {
+            return userId;
+        }
+        return null;
     }
 
     public void setUserId(Long userId) {

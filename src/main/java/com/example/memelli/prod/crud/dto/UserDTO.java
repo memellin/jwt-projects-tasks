@@ -45,12 +45,12 @@ public class UserDTO implements Serializable{ // CLASSE PARA TRANSITAR NO JSON O
     }
 
     public UserDTO(User entity) {
-        id = entity.getId();
-        name = entity.getName();
-        surname = entity.getSurname();
-        email = entity.getEmail();
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.surname = entity.getSurname();
+        this.email = entity.getEmail();
         entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
-        projectId = entity.getProject().getId();
+        this.projectId = entity.getProject().getId();
     }
 
     public UserDTO(User entity, Set<Task> tasks) { //salvo as tasks em um task por segurança
@@ -60,7 +60,7 @@ public class UserDTO implements Serializable{ // CLASSE PARA TRANSITAR NO JSON O
 
     public UserDTO(User entity, List<TaskDTO> tasks) { //salvo as tasks em um task por segurança
         this(entity);
-        tasks.forEach(t -> this.tasks.add(t)); 
+        tasks.forEach(t -> this.tasks.add((t))); 
     }
 
     public Long getId() {

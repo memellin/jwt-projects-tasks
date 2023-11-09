@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.example.memelli.prod.crud.entities.enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "tb_task")
@@ -26,7 +27,7 @@ public class Task implements Serializable {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -67,9 +68,12 @@ public class Task implements Serializable {
     public void setStatus(TaskStatus status) {
         this.status = status.getCode();
     }
-    
+    @JsonBackReference
     public User getUser() {
-        return user;
+        if(user != null) {
+            return user;
+        }
+        return null;
     }
 
     public void setUser(User user) {

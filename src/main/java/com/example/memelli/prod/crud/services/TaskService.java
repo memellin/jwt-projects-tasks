@@ -21,6 +21,7 @@ import com.example.memelli.prod.crud.entities.Task;
 import com.example.memelli.prod.crud.entities.User;
 import com.example.memelli.prod.crud.repositories.ProjectRepository;
 import com.example.memelli.prod.crud.repositories.TaskRepository;
+import com.example.memelli.prod.crud.repositories.UserRepository;
 import com.example.memelli.prod.crud.services.exceptions.DataBaseException;
 import com.example.memelli.prod.crud.services.exceptions.ResourceNotFoundException;
 
@@ -30,10 +31,11 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-
-
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public Page<TaskDTO> findAllPaged(PageRequest pageable) {
@@ -48,13 +50,12 @@ public class TaskService {
         return listDTO;
     }
 
-    @Transactional
-    public List<TaskDTO> findbyUserId(User user){
+    @Transactional(readOnly = true)
+    public List<TaskDTO> findbyUserId(User user) {
         List<Task> list = taskRepository.findByUserId(user);
         List<TaskDTO> listDTO = list.stream().map(x -> new TaskDTO(x)).collect(Collectors.toList());
         return listDTO;
     }
-
 
     @Transactional(readOnly = true)
     public TaskDTO findById(Long id) {
@@ -65,61 +66,64 @@ public class TaskService {
         return new TaskDTO(entity);
     }
 
-    
     @Transactional
     public TaskDTO insert(@RequestBody TaskDTO dto) {
-    // pega o id do projeto que vem no DTO
-    Long projectId = dto.getProjectId();
+        // pega o id do projeto que vem no DTO
+        Long projectId = dto.getProjectId();
 
-    // Valida o id do projeto
-    if (projectId == null) {
-        throw new ResourceNotFoundException("Project ID is required");
-    }
+        // Valida o id do projeto
+        if (projectId == null) {
+            throw new ResourceNotFoundException("Project ID is required");
+        }
+        Long userId = dto.getUserId();
 
-    // Cria nova entitidade task
-    Task entity = new Task();
-    entity.setDescription(dto.getDescription());
-    entity.setStatus(dto.getStatus());
+        // Valida o id do projeto
 
-    // pega o projeto project id do taskdto e valida no projectrepository
-    Project project = projectRepository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-
-    // Atribui o projeto a task
-    entity.setProject(project);
-
-    // salva a entidade task
-    entity = taskRepository.save(entity);
-
-    return new TaskDTO(entity);
-
-    }
-
-   
-    @Transactional
-    public TaskDTO update(Long id, TaskDTO dto) {
-        try{
-        Task entity = taskRepository.getById(id);
+        // Cria nova entitidade task
+        Task entity = new Task();
         entity.setDescription(dto.getDescription());
         entity.setStatus(dto.getStatus());
+
+        // pega o projeto project id do taskdto e valida no projectrepository
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        // pega o user id do taskdto e valido no userrepository
+         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Project not found"));;
+         entity.setUser(user);
+        // Atribui o projeto a task
+        entity.setProject(project);
+        // entity.setUser(user);
+        // salva a entidade task
         entity = taskRepository.save(entity);
+
         return new TaskDTO(entity);
+
+    }
+
+    @Transactional
+    public TaskDTO update(Long id, TaskDTO dto) {
+        try {
+            Task entity = taskRepository.getById(id);
+            entity.setDescription(dto.getDescription());
+            entity.setStatus(dto.getStatus());
+            Long userId = dto.getUserId();
+            User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+            entity.setUser(user);
+            entity = taskRepository.save(entity);
+            return new TaskDTO(entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Id not found " + id);
         }
     }
 
     public void delete(Long id) {
-     try{
-        taskRepository.deleteById(id);
-        } 
-        catch (EmptyResultDataAccessException e) {
+        try {
+            taskRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Id not found " + id);
-        }
-        catch (DataIntegrityViolationException e) {  // um projeto com varias tasksk nao pode ser deletado
+        } catch (DataIntegrityViolationException e) { // um projeto com varias tasksk nao pode ser deletado
             throw new DataBaseException("Integrity violation");
         }
     }
-
-    
 
 }

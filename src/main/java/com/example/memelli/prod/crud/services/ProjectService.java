@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.memelli.prod.crud.dto.ProjectDTO;
 import com.example.memelli.prod.crud.dto.TaskDTO;
+import com.example.memelli.prod.crud.dto.UserDTO;
 import com.example.memelli.prod.crud.entities.Project;
 import com.example.memelli.prod.crud.repositories.ProjectRepository;
 import com.example.memelli.prod.crud.services.exceptions.DataBaseException;
@@ -30,6 +31,9 @@ public class ProjectService {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private UserService userService;
+
    
     @Transactional(readOnly = true)
     public Page<ProjectDTO> findAllPaged(PageRequest pageable) {
@@ -42,7 +46,8 @@ public class ProjectService {
         Optional<Project> obj = projectRepository.findById(id);
         Project entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         List<TaskDTO> tasks = taskService.findbyProjectId(entity);
-        return new ProjectDTO(entity, tasks);
+        List<UserDTO> users = userService.findbyProjectId(entity);
+        return new ProjectDTO(entity, users, tasks);
     }
 
     @Transactional
